@@ -12,6 +12,8 @@ class Value:
         return Value(self.data - other.data, (self, other), 'sub')
     def square(self):
         return Value(self.data * self.data, (self, ), 'square')
+    def relu(self):
+        return Value(self.data if self.data > 0 else 0, (self, ), 'relu')
     def __repr__(self):
         return f'{self.data}'
     def __mul__(self, other):
@@ -41,6 +43,8 @@ class Value:
             b.grad += self.grad * a.data
         elif self.operator == 'square':
             self.parents[0].grad += self.grad * 2 * self.parents[0].data
+        elif self.operator == 'relu':
+            self.parents[0].grad += self.grad if self.data > 0 else 0
         elif self.operator == 'sub':
             a = self.parents[0]
             b = self.parents[1]
